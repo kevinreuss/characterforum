@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Charakter Details</title>
+    <style>
+      /* Kopiere die grundlegenden Styles aus index.html */
+      /* ... */
+
+      .character-detail {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #2c2c2c;
+        border-radius: 10px;
+      }
+
+      .back-button {
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* Reset und Grundstil */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #1a1a1a;
+        color: #ffffff;
+      }
+
+      /* Header Styling */
+      .header {
+        background-color: #2c2c2c;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .search-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      #search-input {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+      }
+
+      /* Charakter-Karten Styling */
+      .characters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      .character-card {
+        background-color: #2c2c2c;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+
+      .character-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .character-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .character-info {
+        padding: 1rem;
+      }
+
+      /* Bewertungs-Styling */
+      .rating-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .rating-slider {
+        flex: 1;
+        height: 10px;
+        -webkit-appearance: none;
+        background: linear-gradient(to right, #ff4444, #ffffff, #44ff44);
+        border-radius: 5px;
+      }
+
+      /* Kommentar-Bereich */
+      .comments-section {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: #333;
+        border-radius: 5px;
+      }
+
+      .comment {
+        background-color: #2c2c2c;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-radius: 5px;
+      }
+
+      .comment-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .vote-button {
+        background: none;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+      }
+
+      .nested-comments {
+        margin-left: 2rem;
+      }
+
+      /* Modern Character Detail Styling */
+      .character-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .character-detail-image {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        margin-bottom: 1.5rem;
+      }
+
+      .rating-section {
+        background-color: #333;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 2rem 0;
+      }
+
+      .rating-section h3 {
+        margin-bottom: 1rem;
+        color: #fff;
+      }
+
+      /* Modern Button Style */
+      .modern-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .modern-button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+      }
+
+      /* Modern Rating Slider */
+      .rating-slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(to right, #ff4444, #ffffff, #44ff44);
+        margin: 1rem 0;
+      }
+
+      .rating-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+      }
+
+      .rating-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Modern Comments Section */
+      .comments-section {
+        background-color: #333;
+        padding: 2rem;
+        border-radius: 15px;
+      }
+
+      .comment-form {
+        margin-bottom: 2rem;
+      }
+
+      .comment-input,
+      .reply-input {
+        width: 100%;
+        min-height: 100px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #2c2c2c;
+        border: 2px solid #444;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+        resize: vertical;
+        transition: border-color 0.3s ease;
+      }
+
+      .comment-input:focus,
+      .reply-input:focus {
+        outline: none;
+        border-color: #4caf50;
+      }
+
+      .comment {
+        background-color: #2c2c2c;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .comment p {
+        margin-bottom: 1rem;
+        line-height: 1.5;
+      }
+
+      .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #444;
+      }
+
+      .vote-button {
+        background: none;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+      }
+
+      .vote-button:hover {
+        background-color: #444;
+      }
+
+      .reply-button {
+        background-color: transparent;
+        color: #4caf50;
+        border: 1px solid #4caf50;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .reply-button:hover {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .timestamp {
+        color: #888;
+        font-size: 0.9rem;
+      }
+
+      /* Nested Comments */
+      .replies {
+        margin-left: 2rem;
+        padding-left: 1rem;
+        border-left: 2px solid #444;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-button" onclick="window.location.href='index.html'">
+      ← Zurück
+    </button>
+
+    <div class="character-detail" id="character-container">
+      <!-- Wird dynamisch gefüllt -->
+    </div>
+
+    <script src="characters.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const characterId = urlParams.get("id");
+
+        // Lade gespeicherte Daten
+        let ratings =
+          JSON.parse(localStorage.getItem("characterRatings")) || {};
+        let comments =
+          JSON.parse(localStorage.getItem("characterComments")) || {};
+
+        const character = characters.find(
+          (c) => c.id === parseInt(characterId)
+        );
+        if (!character) {
+          document.getElementById("character-container").innerHTML =
+            "<h2>Charakter nicht gefunden</h2>";
+          return;
+        }
+
+        // Berechne Durchschnittsbewertung
+        const characterRatings = Object.values(ratings[characterId] || {});
+        const avgRating = characterRatings.length
+          ? (
+              characterRatings.reduce((a, b) => a + Number(b), 0) /
+              characterRatings.length
+            ).toFixed(1)
+          : "No ratings yet";
+
+        // Erstelle Character Detail View
+        const container = document.getElementById("character-container");
+        container.innerHTML = `
+          <div class="character-header">
+            <img src="${character.image}" alt="${character.name}" class="character-detail-image" style="max-width: 400px;">
+            <h1>${character.name}</h1>
+            <h2>${character.series}</h2>
+            <div class="rating-info">
+              <h3>Rating: ${avgRating}</h3>
+            </div>
+          </div>
+
+          <div class="rating-section">
+            <h3>Your Rating</h3>
+            <div class="rating-container">
+              <input type="range" min="-10" max="10" value="0" 
+                class="rating-slider" id="user-rating">
+              <span class="rating-value">0</span>
+            </div>
+            <button onclick="submitRating()" class="modern-button">Submit Rating</button>
+          </div>
+
+          <div class="comments-section">
+            <h3>Comments</h3>
+            <div class="comment-form">
+              <textarea placeholder="Write a comment..." id="comment-input" class="comment-input"></textarea>
+              <button onclick="addComment(null)" class="modern-button">Comment</button>
+            </div>
+            <div id="comments-container"></div>
+          </div>
+        `;
+
+        // Bewertungsfunktion
+        window.submitRating = function () {
+          const ratingValue = document.getElementById("user-rating").value;
+          if (!ratings[characterId]) ratings[characterId] = {};
+
+          // Verwende eine userId (hier vereinfacht mit Timestamp)
+          const userId = Date.now().toString();
+          ratings[characterId][userId] = ratingValue;
+
+          localStorage.setItem("characterRatings", JSON.stringify(ratings));
+          alert("Bewertung gespeichert!");
+          location.reload(); // Aktualisiere die Seite für neue Durchschnittsbewertung
+        };
+
+        // Kommentarfunktionen
+        function createCommentHTML(comment, level = 0) {
+          const replies = comment.replies || [];
+          const margin = level * 20;
+
+          return `
+            <div class="comment" style="margin-left: ${margin}px">
+              <p>${comment.text}</p>
+              <div class="comment-actions">
+                <span class="timestamp">${new Date(
+                  comment.timestamp
+                ).toLocaleString()}</span>
+                <button class="vote-button" onclick="voteComment(${
+                  comment.id
+                }, 1)">
+                  👍 ${comment.votes}
+                </button>
+                <button class="vote-button" onclick="voteComment(${
+                  comment.id
+                }, -1)">
+                  👎
+                </button>
+                <button class="reply-button" onclick="showReplyForm(${
+                  comment.id
+                })">Reply</button>
+              </div>
+              <div id="reply-form-${comment.id}" style="display: none;">
+                <textarea placeholder="Your reply..." id="reply-input-${
+                  comment.id
+                }" class="reply-input"></textarea>
+                <button onclick="addComment(${
+                  comment.id
+                })" class="modern-button">Submit Reply</button>
+              </div>
+              <div class="replies">
+                ${replies
+                  .map((reply) => createCommentHTML(reply, level + 1))
+                  .join("")}
+              </div>
+            </div>
+          `;
+        }
+
+        window.showReplyForm = function (commentId) {
+          const form = document.getElementById(`reply-form-${commentId}`);
+          form.style.display = form.style.display === "none" ? "block" : "none";
+        };
+
+        window.addComment = function (parentId) {
+          const inputId = parentId
+            ? `reply-input-${parentId}`
+            : "comment-input";
+          const commentText = document.getElementById(inputId).value.trim();
+
+          if (!commentText) return;
+
+          if (!comments[characterId]) comments[characterId] = [];
+
+          const newComment = {
+            id: Date.now(),
+            text: commentText,
+            timestamp: new Date().toISOString(),
+            votes: 0,
+            replies: [],
+          };
+
+          if (parentId) {
+            // Finde den übergeordneten Kommentar und füge die Antwort hinzu
+            function addReply(commentsArray) {
+              for (let comment of commentsArray) {
+                if (comment.id === parentId) {
+                  comment.replies = comment.replies || [];
+                  comment.replies.push(newComment);
+                  return true;
+                }
+                if (comment.replies && addReply(comment.replies)) {
+                  return true;
+                }
+              }
+              return false;
+            }
+            addReply(comments[characterId]);
+          } else {
+            comments[characterId].unshift(newComment);
+          }
+
+          localStorage.setItem("characterComments", JSON.stringify(comments));
+          updateComments();
+          document.getElementById(inputId).value = "";
+        };
+
+        window.voteComment = function (commentId, value) {
+          function updateVote(commentsArray) {
+            for (let comment of commentsArray) {
+              if (comment.id === commentId) {
+                comment.votes += value;
+                return true;
+              }
+              if (comment.replies && updateVote(comment.replies)) {
+                return true;
+              }
+            }
+            return false;
+          }
+
+          updateVote(comments[characterId] || []);
+          localStorage.setItem("characterComments", JSON.stringify(comments));
+          updateComments();
+        };
+
+        function updateComments() {
+          const container = document.getElementById("comments-container");
+          const characterComments = comments[characterId] || [];
+          container.innerHTML = characterComments
+            .map((comment) => createCommentHTML(comment))
+            .join("");
+        }
+
+        // Initialisiere Kommentare
+        updateComments();
+
+        // Aktualisiere Rating-Anzeige bei Änderung
+        document
+          .getElementById("user-rating")
+          .addEventListener("input", (e) => {
+            e.target.nextElementSibling.textContent = e.target.value;
+          });
+      });
+    </script>
+  </body>
+</html>

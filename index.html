@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CharacterRater - Your Opinion on Movie and TV Show Characters</title>
+    <style>
+      /* Reset und Grundstil */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #1a1a1a;
+        color: #ffffff;
+      }
+
+      /* Modern Header Styling */
+      .header {
+        background-color: #2c2c2c;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .header p {
+        color: #888;
+        font-size: 1.1rem;
+      }
+
+      /* Modern Search Container */
+      .search-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      #search-input {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 1.2rem;
+        border: 2px solid #333;
+        border-radius: 12px;
+        background-color: #2c2c2c;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      #search-input:focus {
+        outline: none;
+        border-color: #4caf50;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.1);
+      }
+
+      /* Modern Character Cards */
+      .characters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .character-card {
+        background-color: #2c2c2c;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .character-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .character-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .character-card:hover .character-image {
+        transform: scale(1.05);
+      }
+
+      .character-info {
+        padding: 1.5rem;
+      }
+
+      .character-info h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .character-info h3 {
+        color: #888;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .rating-display {
+        background-color: #333;
+        padding: 0.75rem;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .rating-display strong {
+        color: #4caf50;
+        font-size: 1.1rem;
+      }
+
+      /* Responsive Anpassungen */
+      @media (max-width: 768px) {
+        .characters-grid {
+          padding: 1rem;
+          gap: 1rem;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>CharacterRater</h1>
+      <p>Rate and discuss movie and tv show characters!</p>
+    </div>
+
+    <div class="search-container">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search for characters..."
+      />
+    </div>
+
+    <div class="characters-grid" id="characters-container">
+      <!-- Charaktere werden hier dynamisch eingefügt -->
+    </div>
+
+    <script src="characters.js"></script>
+    <script>
+      // Hauptfunktionalität
+      document.addEventListener("DOMContentLoaded", () => {
+        const charactersContainer = document.getElementById(
+          "characters-container"
+        );
+        const searchInput = document.getElementById("search-input");
+
+        function createCharacterCard(character) {
+          const card = document.createElement("div");
+          card.className = "character-card";
+          card.onclick = () =>
+            (window.location.href = `character.html?id=${character.id}`);
+
+          // Hole den Durchschnittsscore aus dem localStorage
+          const ratings =
+            JSON.parse(localStorage.getItem("characterRatings")) || {};
+          const characterRatings = Object.values(ratings[character.id] || {});
+          const avgRating = characterRatings.length
+            ? (
+                characterRatings.reduce((a, b) => a + Number(b), 0) /
+                characterRatings.length
+              ).toFixed(1)
+            : "No ratings yet";
+
+          card.innerHTML = `
+              <img src="${character.image}" alt="${character.name}" class="character-image">
+              <div class="character-info">
+                  <h2>${character.name}</h2>
+                  <h3>${character.series}</h3>
+                  <div class="rating-display">
+                      <strong>Rating: ${avgRating}</strong>
+                  </div>
+              </div>
+          `;
+          return card;
+        }
+
+        function displayCharacters(charactersToShow = characters) {
+          charactersContainer.innerHTML = "";
+          charactersToShow.forEach((character) => {
+            charactersContainer.appendChild(createCharacterCard(character));
+          });
+        }
+
+        // Suchfunktion
+        searchInput.addEventListener("input", (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          const filteredCharacters = characters.filter(
+            (character) =>
+              character.name.toLowerCase().includes(searchTerm) ||
+              character.series.toLowerCase().includes(searchTerm)
+          );
+          displayCharacters(filteredCharacters);
+        });
+
+        // Initial Display
+        displayCharacters();
+      });
+    </script>
+  </body>
+</html>
